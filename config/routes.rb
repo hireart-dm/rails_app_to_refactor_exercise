@@ -5,6 +5,8 @@ Rails.application.routes.draw do
 
   resource :user, only: [:show, :destroy]
 
+  # use proper resource routing to align with REST arch
+
   resources :todos do
     member do
       put 'complete'

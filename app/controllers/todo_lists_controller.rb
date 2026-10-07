@@ -2,7 +2,6 @@
 
 class TodoListsController < ApplicationController
   before_action :authenticate_user
-
   before_action :set_todo_lists
   before_action :set_todo_list, except: [:index, :create]
 

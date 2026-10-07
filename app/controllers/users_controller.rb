@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 class UsersController < ApplicationController
+  # use authenticate_user EXCEPT for create method
+
   def create
+    # move this validation logic into the model, only it cares about the incoming data this controller doesn't
     user_params = params.require(:user).permit(:name, :email, :password, :password_confirmation)
 
     password = user_params[:password].to_s.strip
@@ -11,12 +14,16 @@ class UsersController < ApplicationController
     errors[:password] = ["can't be blank"] if password.blank?
     errors[:password_confirmation] = ["can't be blank"] if password_confirmation.blank?
 
+    # Again use a serializer it can return the right errors in the right format
     if errors.present?
       render_json(422, user: errors)
     else
       if password != password_confirmation
         render_json(422, user: { password_confirmation: ["doesn't match password"] })
       else
+
+        # Move this logic into the model itself, we are not concerned here with creating token and digests
+        # use bcrypt
         password_digest = Digest::SHA256.hexdigest(password)
 
         user = User.new(
@@ -26,6 +33,7 @@ class UsersController < ApplicationController
           password_digest: password_digest
         )
 
+        # use a serializer for model to json
         if user.save
           render_json(201, user: user.as_json(only: [:id, :name, :token]))
         else
@@ -33,8 +41,12 @@ class UsersController < ApplicationController
         end
       end
     end
+
+    # refactor to have single exit using the Serializer result
   end
 
+
+  # refactor both methods below to handle new reality of authenticate_user
   def show
     perform_if_authenticated
   end
@@ -47,6 +59,7 @@ class UsersController < ApplicationController
 
   private
 
+    # delete this
     def perform_if_authenticated(&block)
       authenticate_user do
         block.call if block

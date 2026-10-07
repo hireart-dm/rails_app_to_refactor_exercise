@@ -23,8 +23,11 @@ class Todo < ApplicationRecord
   scope :order_by, ->(params) {
     order = params[:order]&.strip&.downcase == 'asc' ? :asc : :desc
 
+    # maybe add validation to ensure that sort_by keys are in the columsn we're sorting by
     sort_by = params[:sort_by]&.strip&.downcase
 
+    # if there no sort_by parameters default to id field
+    # caveat: assuming that the id column is monotonic increasing
     column_name = column_names.excluding('id').include?(sort_by) ? sort_by : 'id'
 
     order(column_name => order)
@@ -55,6 +58,7 @@ class Todo < ApplicationRecord
     !incomplete?
   end
 
+  # Update status to use a standardized type/enum
   def status
     return 'completed' if completed?
     return 'overdue' if overdue?
