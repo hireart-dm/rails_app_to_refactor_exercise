@@ -13,6 +13,8 @@ class TodosController < ApplicationController
     render_json(404, key => { id: not_found.id, message: 'not found' })
   end
 
+  #use a serializer
+
   def index
     todos = @todos.filter_by_status(params).order_by(params).map(&:serialize_as_json)
 
@@ -20,6 +22,7 @@ class TodosController < ApplicationController
   end
 
   def create
+    # whitelist params being used to create objects
     todo = @todos.create(todo_params.except(:completed))
 
     if todo.valid?
@@ -62,6 +65,8 @@ class TodosController < ApplicationController
   end
 
   private
+
+    
 
     def todo_lists_only_non_default? = false
 

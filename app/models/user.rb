@@ -7,9 +7,12 @@ class User < ApplicationRecord
   has_one :default_todo_list, ->(user) { user.todo_lists.default }, class_name: 'TodoList'
 
   validates :name, presence: true
+  # Probably move this uniqueness constraint into the database
   validates :email, presence: true, format: URI::MailTo::EMAIL_REGEXP, uniqueness: true
-  validates :token, presence: true, length: { is: 36 }, uniqueness: true
   validates :password_digest, presence: true, length: { is: 64 }
+
+  # Feels like bad security to me
+  validates :token, presence: true, length: { is: 36 }, uniqueness: true
 
   after_create :create_default_todo_list
   after_commit :send_welcome_email, on: :create

@@ -7,5 +7,8 @@ class CreateTodoLists < ActiveRecord::Migration[7.0]
 
       t.timestamps
     end
+
+    # TODO: add insert trigger on user which creates their default todo list
+    
   end
 end
