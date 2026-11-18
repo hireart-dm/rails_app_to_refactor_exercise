@@ -22,6 +22,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_08_115941) do
 
   create_table "todos", force: :cascade do |t|
     t.string "title"
+    t.string "status"
     t.datetime "due_at", precision: nil
     t.datetime "completed_at", precision: nil
     t.datetime "created_at", null: false

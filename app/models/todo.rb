@@ -1,15 +1,20 @@
 # frozen_string_literal: true
 
 class Todo < ApplicationRecord
-  attr_accessor :completed
+  # attr_accessor :completed ## should just be a possible status of the enum 
+  # Add db field and model string enum to track status more effectively 
+  # decouple status methods from each other, use enum built in methods 
 
   belongs_to :todo_list, required: true, inverse_of: :todos
 
   has_one :user, through: :todo_list
 
-  scope :overdue, -> { incomplete.where('due_at <= ?', Time.current) }
+  enum :status, { pending: 0, in_progress: 1, completed: 2 }, default: :pending
+
+  # these should use status string enum for better queries and less logic 
+  scope :overdue, -> { where('due_at <= ?', Time.current) }
   scope :completed, -> { where.not(completed_at: nil) }
-  scope :incomplete, -> { where(completed_at: nil) }
+  scope :incomplete, -> { where(status: "incomplete") }
 
   scope :filter_by_status, ->(params) {
     case params[:status]&.strip&.downcase
@@ -20,6 +25,7 @@ class Todo < ApplicationRecord
     end
   }
 
+  # Could refactor order by scope into a shared concern between models
   scope :order_by, ->(params) {
     order = params[:order]&.strip&.downcase == 'asc' ? :asc : :desc
 
@@ -32,8 +38,8 @@ class Todo < ApplicationRecord
 
   before_validation on: :update do
     case completed
-    when 'true' then complete
-    when 'false' then incomplete
+    when true, 'true' then complete
+    when false, 'false' then incomplete
     end
   end
 

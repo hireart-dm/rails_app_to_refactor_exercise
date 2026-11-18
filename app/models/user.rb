@@ -3,7 +3,8 @@
 class User < ApplicationRecord
   has_many :todo_lists, dependent: :destroy, inverse_of: :user
   has_many :todos, through: :todo_lists
-
+  
+  # Could simplify this to just filter for the default list, since Rails already handles scoping it to the user.
   has_one :default_todo_list, ->(user) { user.todo_lists.default }, class_name: 'TodoList'
 
   validates :name, presence: true

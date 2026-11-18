@@ -40,9 +40,7 @@ class TodosController < ApplicationController
   end
 
   def update
-    @todo.update(todo_params)
-
-    if @todo.valid?
+    if @todo.update(todo_params)
       render_json(200, todo: @todo.serialize_as_json)
     else
       render_json(422, todo: @todo.errors.as_json)
@@ -70,6 +68,7 @@ class TodosController < ApplicationController
         if params[:todo_list_id].present?
           @todo_lists.find(params[:todo_list_id])
         else
+          # Think about refactoring before actions and conditions here, attempt not to have action_name as the condition 
           action_name == 'create' ? @todo_lists.default.first! : current_user
         end
 

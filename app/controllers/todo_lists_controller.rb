@@ -37,9 +37,7 @@ class TodoListsController < ApplicationController
   end
 
   def update
-    @todo_list.update(todo_list_params)
-
-    if @todo_list.valid?
+    if @todo_list.update(todo_list_params)
       render_json(200, todo_list: @todo_list.serialize_as_json)
     else
       render_json(422, todo_list: @todo_list.errors.as_json)
