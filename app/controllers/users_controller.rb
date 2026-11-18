@@ -2,8 +2,7 @@
 
 class UsersController < ApplicationController
   def create
-    user_params = params.require(:user).permit(:name, :email, :password, :password_confirmation)
-
+    user_params = fetch_user_params
     password = user_params[:password].to_s.strip
     password_confirmation = user_params[:password_confirmation].to_s.strip
 
@@ -53,5 +52,9 @@ class UsersController < ApplicationController
 
         render_json(200, user: { email: current_user.email })
       end
+    end
+
+    def fetch_user_params 
+      params.require(:user).permit(:name, :email, :password, :password_confirmation)
     end
 end

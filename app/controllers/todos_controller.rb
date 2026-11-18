@@ -70,6 +70,7 @@ class TodosController < ApplicationController
         if params[:todo_list_id].present?
           @todo_lists.find(params[:todo_list_id])
         else
+          # Think about refactoring before actions and conditions here, attempt not to have action_name as the condition 
           action_name == 'create' ? @todo_lists.default.first! : current_user
         end
 
