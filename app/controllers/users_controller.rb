@@ -2,6 +2,10 @@
 
 class UsersController < ApplicationController
   def create
+<<<<<<< Updated upstream
+=======
+    # Could use early returns here to flatten out the password checks.
+>>>>>>> Stashed changes
     user_params = fetch_user_params
     password = user_params[:password].to_s.strip
     password_confirmation = user_params[:password_confirmation].to_s.strip

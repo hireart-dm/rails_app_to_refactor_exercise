@@ -38,8 +38,8 @@ class Todo < ApplicationRecord
 
   before_validation on: :update do
     case completed
-    when 'true' then complete
-    when 'false' then incomplete
+    when true, 'true' then complete
+    when false, 'false' then incomplete
     end
   end
 

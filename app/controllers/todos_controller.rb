@@ -40,9 +40,7 @@ class TodosController < ApplicationController
   end
 
   def update
-    @todo.update(todo_params)
-
-    if @todo.valid?
+    if @todo.update(todo_params)
       render_json(200, todo: @todo.serialize_as_json)
     else
       render_json(422, todo: @todo.errors.as_json)

@@ -202,4 +202,20 @@ class TodosControllerUpdateTest < ActionDispatch::IntegrationTest
 
     assert_predicate(json["todo"]["completed_at"], :blank?)
   end
+
+  test "accepts JSON booleans when completing and reopening a todo" do
+    todo = todos(:john_doe_incomplete)
+
+    [true, false].each do |completed|
+      put(
+        todo_url(id: todo.id),
+        params: { todo: { completed: completed } },
+        headers: AuthenticationHeader.from(todo.user),
+        as: :json
+      )
+
+      assert_response 200
+      assert_equal completed, todo.reload.completed?
+    end
+  end
 end
